@@ -14,6 +14,10 @@ class PersonalSite
     self.render_view('index.html', )
   end
 
+  def self.about
+    self.render_view('about.html')
+  end
+
   def self.error
     self.render_view('error.html', '404')
   end
