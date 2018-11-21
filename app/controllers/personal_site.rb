@@ -2,13 +2,26 @@ require "rack"
 
 class PersonalSite
   def self.call(env)
-    case env["PATH_INFO"]
-    when '/' then index
-    when '/about' then about
-    when '/main.css' then css
+    path = env["PATH_INFO"]
+    case
+    when path == '/' then index
+    when path == '/about' then about
+    when path == '/main.css' then css
+    when path[/^\/blogs\/\d+/]
+      id = path[/(?<=^\/blogs\/)\d+/]
+      blog_nums.include?(id) ? show_blog(id) : error
     else
       error
     end
+  end
+
+  def self.show_blog(id)
+    self.render_view("blog#{id}.html")
+  end
+
+  def self.blog_nums
+    views = Dir.entries("./app/views/")
+    views.map{|filename| filename[/(?<=^blog)\d+/]}.compact
   end
 
   def self.index
